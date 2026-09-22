@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Admin | InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-portal="admin" data-page="dashboard">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo">L</div><div class="brand-text">InsurLogix</div></div>
+      <div class="sidebar-nav"></div>
+      <div class="sidebar-user">
+        <div class="u-avatar">AO</div>
+        <div><div class="u-name"></div><div class="u-role"></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger">☰</button>
+          <div>
+            <div class="topbar-title">Operations Dashboard</div>
+            <div class="topbar-sub">Live overview of documents, renewals and deliveries</div>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <span class="muted small">Today, <span id="todayLabel"></span></span>
+          <div class="avatar">AO</div>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="page-head">
+          <div>
+            <h1>Dashboard</h1>
+            <p>Everything happening across renewals, processing and delivery.</p>
+          </div>
+          <div class="page-actions">
+            <a class="btn btn-primary" href="documents.html">Manage Documents</a>
+            <a class="btn btn-secondary" href="operations.html">Reminders &amp; Batches</a>
+          </div>
+        </div>
+
+        <div id="statsGrid" class="stats-grid"></div>
+
+        <div class="grid-2-1">
+          <div class="stack">
+            <div class="card">
+              <div class="card-header">
+                <div><h2>Upcoming Renewals</h2><div class="sub">Client documents expiring soon</div></div>
+                <a class="btn btn-soft btn-sm" href="renewals.html">View all →</a>
+              </div>
+              <div class="card-body tight" id="dashRenewals"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div><h2>Recent Activity</h2><div class="sub">Latest document and dispatch events</div></div>
+              </div>
+              <div class="card-body" id="dashActivity"></div>
+            </div>
+          </div>
+
+          <div class="stack">
+            <div class="card">
+              <div class="card-header">
+                <div><h2>Pipeline Status</h2><div class="sub">Documents by stage</div></div>
+              </div>
+              <div class="card-body" id="pipelineMini"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div><h2>Quick Actions</h2></div>
+              </div>
+              <div class="card-body split-actions">
+                <div class="stack" style="gap:10px">
+                  <a class="btn btn-primary btn-block" href="clients.html">➕ Onboard Client</a>
+                  <a class="btn btn-secondary btn-block" href="renewals.html">🔄 Add / Renew Document</a>
+                  <a class="btn btn-secondary btn-block" href="operations.html">🚚 Create Delivery Batch</a>
+                  <a class="btn btn-secondary btn-block" href="riders.html">🛵 Add Rider</a>
+                  <a class="btn btn-secondary btn-block" href="../rider/dashboard.html">🔑 Open Rider App</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/admin.js"></script>
+  <script>
+    document.getElementById("todayLabel").textContent =
+      new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  </script>
+</body>
+</html>

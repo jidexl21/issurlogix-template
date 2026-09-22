@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Batch Status — Rider | InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-portal="rider" data-page="batch-status">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo">L</div><div class="brand-text">InsurLogix</div></div>
+      <div class="sidebar-nav"></div>
+      <div class="sidebar-user">
+        <div class="u-avatar">TB</div>
+        <div><div class="u-name"></div><div class="u-role"></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger">☰</button>
+          <div>
+            <div class="topbar-title">Delivery Batch Status</div>
+            <div class="topbar-sub">Update item statuses as you move through your run</div>
+          </div>
+        </div>
+        <div class="topbar-right"><div class="avatar">TB</div></div>
+      </header>
+
+      <div class="content">
+        <div class="page-head">
+          <div>
+            <h1>Batch Status</h1>
+            <p>All documents assigned to you, grouped by current status.</p>
+          </div>
+          <div class="page-actions">
+            <a class="btn btn-secondary" href="waybill.html">🧾 Waybill</a>
+            <a class="btn btn-primary" href="delivery.html">🔑 Delivery Token</a>
+          </div>
+        </div>
+
+        <div class="banner banner-info">
+          <span class="b-icon">ℹ️</span>
+          <div>
+            <strong>Accepted by Client</strong> requires a valid delivery token. Use
+            <a href="delivery.html">Request Delivery Token</a> to send a code via WhatsApp, phone or email,
+            then validate it before confirming handover.
+          </div>
+        </div>
+
+        <div id="statusBoard"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/rider.js"></script>
+</body>
+</html>

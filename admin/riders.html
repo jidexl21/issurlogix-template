@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Riders — Admin | InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-portal="admin" data-page="riders">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo">L</div><div class="brand-text">InsurLogix</div></div>
+      <div class="sidebar-nav"></div>
+      <div class="sidebar-user">
+        <div class="u-avatar">AO</div>
+        <div><div class="u-name"></div><div class="u-role"></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger">☰</button>
+          <div>
+            <div class="topbar-title">Riders</div>
+            <div class="topbar-sub">Delivery team and their assigned batch contents</div>
+          </div>
+        </div>
+        <div class="topbar-right"><div class="avatar">AO</div></div>
+      </header>
+
+      <div class="content">
+        <div class="page-head">
+          <div>
+            <h1>Riders</h1>
+            <p>Manage the dispatch team and review what each rider is carrying.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary" data-modal-open="addRiderModal">➕ Add Rider</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body tight" id="ridersTable"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add rider modal -->
+  <div class="modal-backdrop" id="addRiderModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div><h3>Add a new rider</h3><div class="sub">Register a delivery rider</div></div>
+        <button class="modal-close" data-modal-close>✕</button>
+      </div>
+      <form id="addRiderForm" onsubmit="Admin.submitAddRider(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Full name <span class="req">*</span></label>
+            <input name="riderName" class="form-control" placeholder="e.g. John Doe" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Phone <span class="req">*</span></label>
+              <input name="riderPhone" class="form-control" placeholder="+234 812 000 0000" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input name="riderEmail" class="form-control" type="email" placeholder="rider@dispatch.com" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bike registration no.</label>
+            <input name="riderReg" class="form-control" placeholder="e.g. RC-502" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Add rider</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Rider contents modal -->
+  <div class="modal-backdrop" id="riderContentsModal">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <div><h3 id="riderContentsTitle">Rider contents</h3><div class="sub">Batches and documents currently assigned to this rider</div></div>
+        <button class="modal-close" data-modal-close>✕</button>
+      </div>
+      <div class="modal-body" id="riderContentsBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-modal-close>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/admin.js"></script>
+</body>
+</html>

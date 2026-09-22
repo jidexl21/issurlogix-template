@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard — Client | InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-portal="client" data-page="dashboard">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo">L</div><div class="brand-text">InsurLogix</div></div>
+      <div class="sidebar-nav"></div>
+      <div class="sidebar-user">
+        <div class="u-avatar">AO</div>
+        <div><div class="u-name"></div><div class="u-role"></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger">☰</button>
+          <div>
+            <div class="topbar-title">My Dashboard</div>
+            <div class="topbar-sub">Your documents, renewals and payments</div>
+          </div>
+        </div>
+        <div class="topbar-right"><div class="avatar">AO</div></div>
+      </header>
+
+      <div class="content">
+        <div id="clientGreeting" class="mb-24"></div>
+
+        <div id="clientStats" class="stats-grid"></div>
+
+        <div class="grid-2-1">
+          <div class="card">
+            <div class="card-header">
+              <div><h2>My Documents</h2><div class="sub">Current delivery status of each document</div></div>
+              <a class="btn btn-soft btn-sm" href="track.html">Track all →</a>
+            </div>
+            <ul class="list-plain card-body" id="myDocsList"></ul>
+          </div>
+
+          <div class="stack">
+            <div class="card">
+              <div class="card-header">
+                <div><h2>Renewal Countdown</h2><div class="sub">Time left on each expiry</div></div>
+              </div>
+              <div class="card-body" id="renewalCountdown"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div><h2>Recent Activity</h2><div class="sub">Latest status updates</div></div>
+              </div>
+              <ul class="list-plain card-body" id="clientActivity"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/client.js"></script>
+</body>
+</html>

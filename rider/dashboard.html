@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard — Rider | InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-portal="rider" data-page="dashboard">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo">L</div><div class="brand-text">InsurLogix</div></div>
+      <div class="sidebar-nav"></div>
+      <div class="sidebar-user">
+        <div class="u-avatar">TB</div>
+        <div><div class="u-name"></div><div class="u-role"></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger">☰</button>
+          <div>
+            <div class="topbar-title">My Dashboard</div>
+            <div class="topbar-sub">Today's runs and delivery progress</div>
+          </div>
+        </div>
+        <div class="topbar-right"><div class="avatar">TB</div></div>
+      </header>
+
+      <div class="content">
+        <div class="page-head">
+          <div>
+            <h1>Rider Dashboard</h1>
+            <p>Your assigned batches and outstanding deliveries.</p>
+          </div>
+          <div class="page-actions">
+            <a class="btn btn-primary" href="waybill.html">🧾 Open Waybill</a>
+            <a class="btn btn-secondary" href="delivery.html">🔑 Delivery Token</a>
+          </div>
+        </div>
+
+        <div id="riderStats" class="stats-grid"></div>
+
+        <div class="grid-2">
+          <div id="todayBatch"></div>
+
+          <div class="card">
+            <div class="card-header">
+              <div><h2>Today's Delivery Queue</h2><div class="sub">Items still waiting to be delivered or accepted</div></div>
+            </div>
+            <div class="card-body" id="todaysQueue"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/rider.js"></script>
+</body>
+</html>

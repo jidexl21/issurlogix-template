@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reminders &amp; Batches — Admin | InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-portal="admin" data-page="operations">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo">L</div><div class="brand-text">InsurLogix</div></div>
+      <div class="sidebar-nav"></div>
+      <div class="sidebar-user">
+        <div class="u-avatar">AO</div>
+        <div><div class="u-name"></div><div class="u-role"></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger">☰</button>
+          <div>
+            <div class="topbar-title">Operations</div>
+            <div class="topbar-sub">Reminders · Batch creation · Waybills · Pickup</div>
+          </div>
+        </div>
+        <div class="topbar-right"><div class="avatar">AO</div></div>
+      </header>
+
+      <div class="content">
+        <div class="page-head">
+          <div>
+            <h1>Operations</h1>
+            <p>Schedule reminders, build delivery batches and manage waybills.</p>
+          </div>
+        </div>
+
+        <div class="tabs" data-tabs="opsTabs">
+          <button class="tab-btn active" data-tab="reminders">🔔 Reminders</button>
+          <button class="tab-btn" data-tab="create">🧩 Create Batch</button>
+          <button class="tab-btn" data-tab="batches">🧾 Delivery Batches / Waybill</button>
+          <button class="tab-btn" data-tab="pickup">📍 Batch Pickup</button>
+        </div>
+
+        <div id="opsTabs">
+          <!-- Reminders -->
+          <div class="tab-panel active" data-tab-panel="reminders">
+            <div class="card">
+              <div class="card-header">
+                <div><h2>Scheduled renewal reminders</h2><div class="sub">Automatic notice for clients with documents due for renewal</div></div>
+              </div>
+              <div class="card-body tight" id="remindersTable"></div>
+            </div>
+          </div>
+
+          <!-- Create batch -->
+          <div class="tab-panel" data-tab-panel="create">
+            <div class="card">
+              <div class="card-header">
+                <div><h2>Create a delivery batch</h2><div class="sub">Select documents to bundle into a single rider dispatch</div></div>
+              </div>
+              <div class="card-body">
+                <form id="createBatchForm" onsubmit="Admin.submitCreateBatch(event)">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Batch name <span class="req">*</span></label>
+                      <input name="batchName" class="form-control" placeholder="e.g. Lekki Morning Run" required />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Assign rider</label>
+                      <select name="batchRider" class="form-control">
+                        <option value="">Unassigned</option>
+                        <option>RD-01</option>
+                        <option>RD-02</option>
+                        <option>RD-03</option>
+                        <option>RD-04</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Vehicle / bike marking</label>
+                    <input name="batchVehicle" class="form-control" placeholder="e.g. Yamaha · ABC-123-LA" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Documents in this batch</label>
+                    <div class="spread mb-8">
+                      <span class="small muted" id="batchCount">0 available</span>
+                      <span class="small muted">Items already Awaiting Delivery or Out For Delivery are batchable.</span>
+                    </div>
+                    <div class="select-list" id="batchDocList"></div>
+                    <div id="batchSelectedSummary" class="mt-8"></div>
+                  </div>
+                </form>
+              </div>
+              <div class="card-footer spread">
+                <span class="small muted">Documents will move to “Awaiting Delivery” once added to a batch.</span>
+                <button class="btn btn-primary" type="button" onclick="document.getElementById('createBatchForm').dispatchEvent(new Event('submit', {cancelable:true}))">Create batch</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Batches / waybill -->
+          <div class="tab-panel" data-tab-panel="batches">
+            <div id="batchesList"></div>
+          </div>
+
+          <!-- Pickup -->
+          <div class="tab-panel" data-tab-panel="pickup">
+            <div class="banner banner-info">
+              <span class="b-icon">ℹ️</span>
+              <div>Open a batch in the <strong>Delivery Batches / Waybill</strong> tab and press <strong>📍 Pickup</strong>. Confirming pickup moves all batch items from <em>Awaiting Delivery</em> to <em>Out For Delivery</em>.</div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <div><h2>Pickup confirmation log</h2><div class="sub">Recent batch pickups confirmed at the office counter</div></div>
+              </div>
+              <div class="card-body tight" id="pickupLogWrap">
+                <div class="empty-state">
+                  <div class="es-icon">📍</div>
+                  <h3>No pickups yet today</h3>
+                  <p>Pickups confirmed from a batch card will appear here.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pickup modal -->
+  <div class="modal-backdrop" id="pickupModal">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <div><h3>Confirm batch pickup</h3><div class="sub">Officer hands the batch to the rider</div></div>
+        <button class="modal-close" data-modal-close>✕</button>
+      </div>
+      <form id="pickupForm" onsubmit="Admin.submitPickup(event)">
+        <div class="modal-body">
+          <input type="hidden" id="pickupBatchRef" />
+          <div id="pickupBatchInfo"></div>
+          <div class="divider"></div>
+          <div class="form-group">
+            <label class="form-label">Confirmed by <span class="req">*</span></label>
+            <input id="pickupConfirmer" class="form-control" placeholder="Name of dispatch officer" required />
+          </div>
+          <div class="form-check">
+            <input type="checkbox" id="pickupCount" required />
+            <label for="pickupCount">All items in this batch have been physically counted and handed over.</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-success">Confirm pickup</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/admin.js"></script>
+</body>
+</html>

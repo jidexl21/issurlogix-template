@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invoices &amp; Payments — Client | InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-portal="client" data-page="invoices">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo">L</div><div class="brand-text">InsurLogix</div></div>
+      <div class="sidebar-nav"></div>
+      <div class="sidebar-user">
+        <div class="u-avatar">AO</div>
+        <div><div class="u-name"></div><div class="u-role"></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger">☰</button>
+          <div>
+            <div class="topbar-title">Invoices &amp; Payments</div>
+            <div class="topbar-sub">Payment items, balances and online payment</div>
+          </div>
+        </div>
+        <div class="topbar-right"><div class="avatar">AO</div></div>
+      </header>
+
+      <div class="content">
+        <div class="page-head">
+          <div>
+            <h1>Invoices &amp; Payments</h1>
+            <p>Review payment items and settle your invoices in-app.</p>
+          </div>
+        </div>
+
+        <div id="invoiceSummary" class="stats-grid"></div>
+        <div id="invoiceList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pay modal -->
+  <div class="modal-backdrop" id="payModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div><h3>Make payment</h3><div class="sub">Settle your invoice securely</div></div>
+        <button class="modal-close" data-modal-close>✕</button>
+      </div>
+      <form id="payForm" onsubmit="ClientApp.submitPayment(event)">
+        <div class="modal-body">
+          <div id="paySummary" class="mb-24"></div>
+          <div class="form-group">
+            <label class="form-label">Amount <span class="req">*</span></label>
+            <input name="payAmount" class="form-control" inputmode="decimal" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Payment method <span class="req">*</span></label>
+            <select name="payMethod" class="form-control" required>
+              <option value="">Select…</option>
+              <option>Card</option>
+              <option>Bank transfer</option>
+              <option>USSD</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Reference (optional)</label>
+            <input name="payRef" class="form-control" placeholder="e.g. Salary for September" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-success">Pay now</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/client.js"></script>
+</body>
+</html>

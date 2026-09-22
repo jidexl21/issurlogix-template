@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Waybill — Rider | InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-portal="rider" data-page="waybill">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo">L</div><div class="brand-text">InsurLogix</div></div>
+      <div class="sidebar-nav"></div>
+      <div class="sidebar-user">
+        <div class="u-avatar">TB</div>
+        <div><div class="u-name"></div><div class="u-role"></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger">☰</button>
+          <div>
+            <div class="topbar-title">Delivery Batch Contents (Waybill)</div>
+            <div class="topbar-sub">Physical handover checklist for your current batch</div>
+          </div>
+        </div>
+        <div class="topbar-right"><div class="avatar">TB</div></div>
+      </header>
+
+      <div class="content">
+        <div class="page-head">
+          <div>
+            <h1>Waybill</h1>
+            <p>Review every item in your batch before you head out.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-secondary" onclick="window.print()">🖨 Print waybill</button>
+            <a class="btn btn-primary" href="batch-status.html">📦 Batch Status</a>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <label class="form-label" style="margin:0">Batch</label>
+          <select id="waybillSelect" class="form-control" style="max-width:320px"></select>
+          <div class="spacer"></div>
+          <span class="badge badge-primary no-dot">Rider: Tunde Bakare</span>
+        </div>
+
+        <div id="waybillBody">
+          <div class="waybill mb-24">
+            <div class="waybill-head">
+              <div>
+                <div class="wb-title">Delivery Waybill</div>
+                <div class="wb-id">InsurLogix Logistics · Form LB-01</div>
+              </div>
+              <div class="wb-id">RIDER COPY</div>
+            </div>
+            <div class="waybill-meta" id="waybillMeta"></div>
+            <div id="waybillItems"></div>
+            <div class="waybill-sign">
+              <div>
+                <div class="sign-label">Dispatched by (Office)</div>
+                <div class="sign-line"></div>
+              </div>
+              <div>
+                <div class="sign-label">Received by (Rider)</div>
+                <div class="sign-line"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/rider.js"></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delivery Token — Rider | InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-portal="rider" data-page="delivery">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo">L</div><div class="brand-text">InsurLogix</div></div>
+      <div class="sidebar-nav"></div>
+      <div class="sidebar-user">
+        <div class="u-avatar">TB</div>
+        <div><div class="u-name"></div><div class="u-role"></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger">☰</button>
+          <div>
+            <div class="topbar-title">Delivery Token</div>
+            <div class="topbar-sub">Request a code from the client, then validate it before handover</div>
+          </div>
+        </div>
+        <div class="topbar-right"><div class="avatar">TB</div></div>
+      </header>
+
+      <div class="content">
+        <div class="page-head">
+          <div>
+            <h1>Delivery Token</h1>
+            <p>Step 1 — request a token for the client. Step 2 — validate their code.</p>
+          </div>
+          <div class="page-actions">
+            <a class="btn btn-secondary" href="waybill.html">🧾 Waybill</a>
+            <a class="btn btn-secondary" href="batch-status.html">📦 Batch Status</a>
+          </div>
+        </div>
+
+        <div class="tabs" data-tabs="tokenTabs">
+          <button class="tab-btn active" data-tab="request">1 · Request Token</button>
+          <button class="tab-btn" data-tab="validate">2 · Validate Token</button>
+        </div>
+
+        <div id="tokenTabs">
+          <!-- Step 1: request -->
+          <div class="tab-panel active" data-tab-panel="request">
+            <div class="card mb-24">
+              <div class="card-header">
+                <div><h2>Request delivery token</h2><div class="sub">One code covers every document being handed to a client at a single stop</div></div>
+              </div>
+              <div class="card-body">
+                <form onsubmit="Rider.requestToken(event)">
+                  <div class="form-group">
+                    <label class="form-label">Delivery stop / client <span class="req">*</span></label>
+                    <select id="deliveryStop" class="form-control" required></select>
+                    <div class="form-hint">Each stop groups all pending documents for that client — one token covers them all.</div>
+                  </div>
+                  <div id="stopPreview" class="mb-16"></div>
+                  <div class="form-group">
+                    <label class="form-label">Send code to client via <span class="req">*</span></label>
+                    <input type="hidden" id="deliveryChannel" value="WhatsApp" />
+                    <div class="channel-pills">
+                      <button type="button" class="channel-pill selected" data-channel="WhatsApp">
+                        <div class="cp-icon">💬</div><div class="cp-name">WhatsApp</div><div class="cp-desc">Send to client's WhatsApp</div>
+                      </button>
+                      <button type="button" class="channel-pill" data-channel="Phone">
+                        <div class="cp-icon">📞</div><div class="cp-name">Phone / SMS</div><div class="cp-desc">Read code over a call or SMS</div>
+                      </button>
+                      <button type="button" class="channel-pill" data-channel="Email">
+                        <div class="cp-icon">✉️</div><div class="cp-name">Email</div><div class="cp-desc">Send code to client's email</div>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row mt-16">
+                    <button class="btn btn-primary btn-lg" type="submit">Generate token</button>
+                    <span class="small muted">Tokens expire after 15 minutes or once accepted.</span>
+                  </div>
+                </form>
+                <div id="tokenArea" class="mt-16"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: validate -->
+          <div class="tab-panel" data-tab-panel="validate">
+            <div class="card mb-24">
+              <div class="card-header">
+                <div><h2>Validate client's token</h2><div class="sub">Enter the 6-digit code the client quotes back for this delivery stop</div></div>
+              </div>
+              <div class="card-body">
+                <form onsubmit="Rider.validateToken(event)">
+                  <div class="form-group">
+                    <label class="form-label">Delivery stop / client <span class="req">*</span></label>
+                    <select id="validateStop" class="form-control" required></select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">6-digit token <span class="req">*</span></label>
+                    <div class="token-inputs">
+                      <input class="token-input" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
+                      <input class="token-input" maxlength="1" inputmode="numeric" />
+                      <input class="token-input" maxlength="1" inputmode="numeric" />
+                      <input class="token-input" maxlength="1" inputmode="numeric" />
+                      <input class="token-input" maxlength="1" inputmode="numeric" />
+                      <input class="token-input" maxlength="1" inputmode="numeric" />
+                    </div>
+                    <div class="form-hint">Tip: the client can paste the full code — it will auto-fill.</div>
+                  </div>
+                  <div class="mt-16">
+                    <button class="btn btn-primary btn-lg" type="submit">Validate token</button>
+                  </div>
+                </form>
+                <div id="validateResult"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/rider.js"></script>
+</body>
+</html>

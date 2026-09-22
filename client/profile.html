@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Address / Info — Client | InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-portal="client" data-page="profile">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo">L</div><div class="brand-text">InsurLogix</div></div>
+      <div class="sidebar-nav"></div>
+      <div class="sidebar-user">
+        <div class="u-avatar">AO</div>
+        <div><div class="u-name"></div><div class="u-role"></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger">☰</button>
+          <div>
+            <div class="topbar-title">Address &amp; Info</div>
+            <div class="topbar-sub">Keep your delivery and contact details current</div>
+          </div>
+        </div>
+        <div class="topbar-right"><div class="avatar">AO</div></div>
+      </header>
+
+      <div class="content">
+        <div class="page-head">
+          <div>
+            <h1>Address / Info Update</h1>
+            <p>Your latest address is used for all document deliveries.</p>
+          </div>
+        </div>
+
+        <div class="grid-1-2">
+          <div>
+            <div class="card">
+              <div class="card-header"><div><h2>Delivery address</h2><div class="sub">Where delivery riders should hand over documents</div></div></div>
+              <div class="card-body">
+                <div class="banner banner-info">
+                  <span class="b-icon">ℹ️</span>
+                  <div>Riders confirm identity using a <strong>delivery token</strong> before handing over your documents at this address.</div>
+                </div>
+                <ul class="list-plain">
+                  <li><span class="muted">Method</span><span class="strong">Home delivery</span></li>
+                  <li><span class="muted">Preferred time</span><span>Weekdays, 9am – 5pm</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div><h2>Personal information</h2><div class="sub">Contact details used for reminders and invoices</div></div>
+            </div>
+            <form id="profileForm" onsubmit="ClientApp.submitProfile(event)">
+              <div class="card-body">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Full name <span class="req">*</span></label>
+                    <input name="pfName" class="form-control" required />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Account</label>
+                    <input name="pfAccount" class="form-control" readonly />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Email <span class="req">*</span></label>
+                    <input name="pfEmail" type="email" class="form-control" required />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Phone <span class="req">*</span></label>
+                    <input name="pfPhone" class="form-control" required />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Alternate phone</label>
+                  <input name="pfAltPhone" class="form-control" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Street address <span class="req">*</span></label>
+                  <input name="pfAddress" class="form-control" required />
+                </div>
+                <div class="form-row-3">
+                  <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input name="pfCity" class="form-control" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">State</label>
+                    <input name="pfState" class="form-control" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">ZIP / Postcode</label>
+                    <input name="pfZip" class="form-control" placeholder="e.g. 101241" />
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">💾 Save changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/client.js"></script>
+</body>
+</html>

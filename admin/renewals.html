@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Renewals — Admin | InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-portal="admin" data-page="renewals">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo">L</div><div class="brand-text">InsurLogix</div></div>
+      <div class="sidebar-nav"></div>
+      <div class="sidebar-user">
+        <div class="u-avatar">AO</div>
+        <div><div class="u-name"></div><div class="u-role"></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger">☰</button>
+          <div>
+            <div class="topbar-title">Document Renewals</div>
+            <div class="topbar-sub">Insurance · Vehicle Licence · Roadworthiness</div>
+          </div>
+        </div>
+        <div class="topbar-right"><div class="avatar">AO</div></div>
+      </header>
+
+      <div class="content">
+        <div class="page-head">
+          <div>
+            <h1>Renewals</h1>
+            <p>Track expiring client documents and send renewal reminders.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary" data-modal-open="renewalModal">➕ Add Renewal</button>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="search" id="fSearch" class="form-control" placeholder="Search client, doc no. or type…">
+          </div>
+          <select id="fType" class="form-control" style="max-width:190px">
+            <option value="all">All types</option>
+            <option>Insurance</option>
+            <option>Vehicle Licence</option>
+            <option>Roadworthiness</option>
+          </select>
+          <select id="fStatus" class="form-control" style="max-width:170px">
+            <option value="all">All statuses</option>
+            <option>Upcoming</option>
+            <option>Due Soon</option>
+            <option>Expired</option>
+          </select>
+          <div class="spacer"></div>
+          <span class="badge badge-primary no-dot" id="renewalCount">0 renewals</span>
+        </div>
+
+        <div class="card">
+          <div class="card-body tight" id="renewalsTable"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reminder modal -->
+  <div class="modal-backdrop" id="reminderModal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <div><h3>Send renewal reminder</h3><div class="sub">Notify the client about an upcoming renewal</div></div>
+        <button class="modal-close" data-modal-close>✕</button>
+      </div>
+      <form id="reminderForm" onsubmit="Admin.sendReminder(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Document</label>
+            <input type="text" class="form-control" id="reminderDoc" readonly />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Delivery channel</label>
+            <input type="hidden" name="reminderChannel" id="reminderChannel" value="WhatsApp" />
+            <div class="channel-pills">
+              <button type="button" class="channel-pill selected" data-channel="WhatsApp">
+                <div class="cp-icon">💬</div><div class="cp-name">WhatsApp</div><div class="cp-desc">Instant message</div>
+              </button>
+              <button type="button" class="channel-pill" data-channel="Email">
+                <div class="cp-icon">✉️</div><div class="cp-name">Email</div><div class="cp-desc">Official notice</div>
+              </button>
+              <button type="button" class="channel-pill" data-channel="Phone">
+                <div class="cp-icon">📞</div><div class="cp-name">Phone call</div><div class="cp-desc">Call the client</div>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Send reminder</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add / renew modal -->
+  <div class="modal-backdrop" id="renewalModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div><h3>Add / renew document</h3><div class="sub">Record a new renewal or extend an existing one</div></div>
+        <button class="modal-close" data-modal-close>✕</button>
+      </div>
+      <form id="renewalForm" onsubmit="Admin.submitRenewal(event)">
+        <div class="modal-body">
+          <input type="hidden" name="renewalOriginalId" value="" />
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Client <span class="req">*</span></label>
+              <select name="renewalClient" class="form-control" required>
+                <option value="">Select client…</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Document type <span class="req">*</span></label>
+              <select name="renewalType" class="form-control" required>
+                <option>Insurance</option>
+                <option>Vehicle Licence</option>
+                <option>Roadworthiness</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Document number <span class="req">*</span></label>
+            <input name="renewalNumber" class="form-control" placeholder="e.g. INS-123456" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Issue date <span class="req">*</span></label>
+              <input type="date" name="renewalIssueDate" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Expiry date <span class="req">*</span></label>
+              <input type="date" name="renewalExpiryDate" class="form-control" required />
+            </div>
+          </div>
+          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save renewal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/admin.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const select = document.getElementById("renewalModal").querySelector('select[name="renewalClient"]');
+      DB.clients.forEach((c) => {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = c.name + " (" + c.account + ")";
+        select.appendChild(opt);
+      });
+    });
+  </script>
+</body>
+</html>

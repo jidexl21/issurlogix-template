@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documents — Admin | InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-portal="admin" data-page="documents">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo">L</div><div class="brand-text">InsurLogix</div></div>
+      <div class="sidebar-nav"></div>
+      <div class="sidebar-user">
+        <div class="u-avatar">AO</div>
+        <div><div class="u-name"></div><div class="u-role"></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger">☰</button>
+          <div>
+            <div class="topbar-title">Document Processing</div>
+            <div class="topbar-sub">Processing → Awaiting Delivery → Out For Delivery → Delivered → Accepted</div>
+          </div>
+        </div>
+        <div class="topbar-right"><div class="avatar">AO</div></div>
+      </header>
+
+      <div class="content">
+        <div class="page-head">
+          <div>
+            <h1>Documents</h1>
+            <p>Move documents through the delivery pipeline and inspect their full history.</p>
+          </div>
+          <div class="page-actions">
+            <a class="btn btn-secondary" href="operations.html">📦 Create Batch</a>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="search" id="dSearch" class="form-control" placeholder="Search client, doc no. or ID…">
+          </div>
+          <select id="dType" class="form-control" style="max-width:190px">
+            <option value="all">All types</option>
+            <option>Insurance</option>
+            <option>Vehicle Licence</option>
+            <option>Roadworthiness</option>
+          </select>
+          <select id="dStatus" class="form-control" style="max-width:200px">
+            <option value="all">All statuses</option>
+            <option>Processing</option>
+            <option>Awaiting Delivery</option>
+            <option>Out For Delivery</option>
+            <option>Delivered</option>
+            <option>Returned</option>
+            <option>Accepted by Client</option>
+          </select>
+          <div class="spacer"></div>
+          <span class="badge badge-primary no-dot" id="docCount">0 documents</span>
+        </div>
+
+        <div class="card">
+          <div class="card-body tight" id="documentsTable"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Document detail modal -->
+  <div class="modal-backdrop" id="docDetailModal">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <div><h3>Document detail &amp; history</h3><div class="sub">Full pipeline status and milestone events</div></div>
+        <button class="modal-close" data-modal-close>✕</button>
+      </div>
+      <div class="modal-body" id="docDetailInfo"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-modal-close>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/admin.js"></script>
+</body>
+</html>
