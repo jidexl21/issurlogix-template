@@ -14,26 +14,27 @@
     <div class="landing-brand">
       <div class="logo">L</div>
       <div class="name">InsurLogix</div>
+      <a class="btn btn-primary landing-btn" href="login.html">Sign in →</a>
     </div>
 
     <h1>Insurance Logistics Management</h1>
     <p class="lead">
       Renewals, document processing, dispatch and delivery tracking for insurance
-      clients — all in one place. Pick a portal to get started.
+      clients — all in one place. Choose a portal to sign in.
     </p>
 
     <div class="portal-grid">
-      <a class="portal-card admin" href="admin/dashboard.html">
+      <a class="portal-card admin" href="login.html?role=admin">
         <div class="p-icon">🏢</div>
         <h2>Admin / Operations</h2>
         <p>
           Clients, renewals, document status pipeline, delivery batches, waybills,
-          reminders, riders and dispatch operations.
+          reminders, riders, and access control for users &amp; roles.
         </p>
         <span class="p-cta">Open Admin Portal <span>→</span></span>
       </a>
 
-      <a class="portal-card rider" href="rider/dashboard.html">
+      <a class="portal-card rider" href="login.html?role=rider">
         <div class="p-icon">🛵</div>
         <h2>Rider App</h2>
         <p>
@@ -43,7 +44,7 @@
         <span class="p-cta">Open Rider App <span>→</span></span>
       </a>
 
-      <a class="portal-card client" href="client/dashboard.html">
+      <a class="portal-card client" href="login.html?role=client">
         <div class="p-icon">👤</div>
         <h2>Client App</h2>
         <p>
@@ -54,7 +55,7 @@
       </a>
     </div>
 
-    <div class="landing-foot">InsurLogix · Phase 1 UI prototype · mocked data, not yet wired to a backend</div>
+    <div class="landing-foot">InsurLogix · Phase 1 UI prototype · mocked auth &amp; data, not yet wired to a backend</div>
   </div>
 </body>
 </html>

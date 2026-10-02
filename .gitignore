@@ -1,2 +1,14 @@
 .opencode
-.git
+node_modules
+dist
+.env
+.env.*
+!.env.example
+data
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+coverage
+*.log
+.DS_Store

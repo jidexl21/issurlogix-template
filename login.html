@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in — InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body class="login-body">
+  <div class="login-page">
+    <div class="login-brand-panel">
+      <div class="login-brand-head">
+        <div class="logo logo-light">L</div>
+        <div class="login-brand-name">InsurLogix</div>
+      </div>
+      <h2>One platform for insurance document logistics</h2>
+      <p>Renewals, processing, dispatch and delivery — with a single sign-in for staff, riders and clients.</p>
+      <ul class="login-features">
+        <li>🏢 <span>Staff — operations, billing, support roles with permission-based access.</span></li>
+        <li>🛵 <span>Riders — claim batches and run the delivery token flow.</span></li>
+        <li>👤 <span>Clients — track documents, pay invoices, update details.</span></li>
+      </ul>
+    </div>
+
+    <div class="login-form-panel">
+      <div class="login-card">
+        <div class="login-card-head">
+          <div class="logo">L</div>
+          <div>
+            <h1>Welcome back</h1>
+            <p class="sub">Sign in to your portal to continue.</p>
+          </div>
+        </div>
+
+        <div class="role-tabs" id="roleTabs">
+          <button type="button" class="role-tab active" data-role="admin">
+            <div class="rt-icon">🏢</div><div class="rt-name">Admin</div>
+          </button>
+          <button type="button" class="role-tab" data-role="rider">
+            <div class="rt-icon">🛵</div><div class="rt-name">Rider</div>
+          </button>
+          <button type="button" class="role-tab" data-role="client">
+            <div class="rt-icon">👤</div><div class="rt-name">Client</div>
+          </button>
+        </div>
+
+        <form id="loginForm" onsubmit="Login.submit(event)">
+          <div class="form-group">
+            <label class="form-label" for="loginEmail">Work email</label>
+            <input id="loginEmail" name="email" class="form-control" type="email" placeholder="you@insurlogix.com" autocomplete="username" required />
+          </div>
+          <div class="form-group">
+            <div class="spread">
+              <label class="form-label" for="loginPassword">Password</label>
+              <button type="button" class="link-btn" data-toggle-pw>Show</button>
+            </div>
+            <input id="loginPassword" name="password" class="form-control" type="password" placeholder="••••••••" autocomplete="current-password" required />
+          </div>
+          <div class="demo-hint" id="demoHint">
+            Demo: <span class="mono" id="demoCreds">adefemi.bakare@insurlogix.com / admin123</span>
+          </div>
+          <button class="btn btn-primary btn-lg btn-block" type="submit">Sign in →</button>
+        </form>
+
+        <div class="login-foot">
+          <a class="btn btn-ghost btn-sm" href="index.html">← Back to portal selection</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/login.js"></script>
+</body>
+</html>

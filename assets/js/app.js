@@ -150,6 +150,10 @@ const App = (() => {
           label: "Clients",
           items: [["clients", "👥", "Clients"]],
         },
+        {
+          label: "Access",
+          items: [["users", "🔐", "Users & Roles"]],
+        },
       ],
     },
     rider: {
@@ -184,6 +188,35 @@ const App = (() => {
         },
       ],
     },
+  };
+
+  /* ---------- Session (mock auth) ---------- */
+  const SESSION_KEY = "insurlogix.session";
+  const session = {
+    get() {
+      try { return JSON.parse(sessionStorage.getItem(SESSION_KEY)) || null; } catch (_) { return null; }
+    },
+    set(s) { try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(s)); } catch (_) {} },
+    clear() { try { sessionStorage.removeItem(SESSION_KEY); } catch (_) {} },
+  };
+
+  const signOut = () => {
+    session.clear();
+    location.href = document.body.dataset.portal ? "../login.html" : "login.html";
+  };
+
+  const applySession = () => {
+    const s = session.get();
+    if (!s) return;
+    const avatar = document.querySelector(".sidebar-user .u-avatar");
+    const topAvatar = document.querySelector(".topbar-right .avatar");
+    if (avatar && s.initials) avatar.textContent = s.initials;
+    if (topAvatar && s.initials && topAvatar.textContent.trim().length <= 2) topAvatar.textContent = s.initials;
+    const su = document.querySelector(".sidebar-user");
+    if (su && s.name) {
+      const uName = su.querySelector(".u-name");
+      if (uName) uName.textContent = s.name;
+    }
   };
 
   /* ---------- Sidebar / mobile nav ---------- */
@@ -230,6 +263,16 @@ const App = (() => {
       if (name) name.textContent = cfg.user;
       if (role) role.textContent = cfg.role;
     }
+    // sign out link (portal pages)
+    if (sidebar && !sidebar.querySelector(".log-out-link")) {
+      const lnk = document.createElement("a");
+      lnk.className = "log-out-link";
+      lnk.href = "#";
+      lnk.setAttribute("data-sign-out", "");
+      lnk.textContent = "Sign out";
+      sidebar.appendChild(lnk);
+    }
+    applySession();
   };
 
   /* ---------- Modals ---------- */
@@ -391,6 +434,12 @@ const App = (() => {
     initNav();
     initModals();
     initTabs();
+    document.addEventListener("click", (e) => {
+      if (e.target.closest("[data-sign-out]")) {
+        e.preventDefault();
+        signOut();
+      }
+    });
   };
 
   document.addEventListener("DOMContentLoaded", init);
@@ -420,5 +469,7 @@ const App = (() => {
     qsa,
     renderInto,
     emptyState,
+    session,
+    signOut,
   };
 })();

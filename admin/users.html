@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Users &amp; Roles — Admin | InsurLogix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body data-portal="admin" data-page="users">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="logo">L</div><div class="brand-text">InsurLogix</div></div>
+      <div class="sidebar-nav"></div>
+      <div class="sidebar-user">
+        <div class="u-avatar">AO</div>
+        <div><div class="u-name"></div><div class="u-role"></div></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger">☰</button>
+          <div>
+            <div class="topbar-title">Access Control</div>
+            <div class="topbar-sub">Users · Roles · Permissions</div>
+          </div>
+        </div>
+        <div class="topbar-right"><div class="avatar">AO</div></div>
+      </header>
+
+      <div class="content">
+        <div class="page-head">
+          <div>
+            <h1>Users &amp; Roles</h1>
+            <p>Manage who can sign in and what each role is allowed to do.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary" data-modal-open="userModal">➕ Add User</button>
+            <button class="btn btn-secondary" data-modal-open="roleModal">🛡️ Add Role</button>
+          </div>
+        </div>
+
+        <div class="tabs" data-tabs="accessTabs">
+          <button class="tab-btn active" data-tab="users">👤 Users</button>
+          <button class="tab-btn" data-tab="roles">🛡️ Roles &amp; Permissions</button>
+        </div>
+
+        <div id="accessTabs">
+          <!-- Users -->
+          <div class="tab-panel active" data-tab-panel="users">
+            <div class="card">
+              <div class="card-header">
+                <div><h2>Team and portal users</h2><div class="sub" id="userCount">Loading…</div></div>
+              </div>
+              <div class="card-body">
+                <div class="filter-bar mb-16">
+                  <input id="uSearch" class="form-control" style="max-width:260px" placeholder="Search name, email, phone…" />
+                  <select id="uRole" class="form-control" style="max-width:180px">
+                    <option value="all">All roles</option>
+                  </select>
+                  <select id="uStatus" class="form-control" style="max-width:150px">
+                    <option value="all">All status</option>
+                    <option>Active</option>
+                    <option>Inactive</option>
+                  </select>
+                </div>
+                <div id="usersTable"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Roles -->
+          <div class="tab-panel" data-tab-panel="roles">
+            <div class="card">
+              <div class="card-header">
+                <div><h2>Roles &amp; permissions matrix</h2><div class="sub">Tick the capabilities each role can access. Changes apply to all users in that role.</div></div>
+              </div>
+              <div class="card-body" id="rolesGrid"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User add / edit modal -->
+  <div class="modal-backdrop" id="userModal">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <div><h3 id="userModalTitle">Add user</h3><div class="sub">Create a sign-in for a staff member, rider or client</div></div>
+        <button class="modal-close" data-modal-close>✕</button>
+      </div>
+      <form id="userForm" onsubmit="Admin.submitUser(event)">
+        <input type="hidden" name="userId" />
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full name <span class="req">*</span></label>
+              <input name="userName" class="form-control" placeholder="e.g. Bola Adeyemi" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Role <span class="req">*</span></label>
+              <select name="userRole" id="userRoleSelect" class="form-control" required></select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Email <span class="req">*</span></label>
+              <input name="userEmail" class="form-control" type="email" placeholder="name@insurlogix.com" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input name="userPhone" class="form-control" placeholder="+234 8xx xxx xxxx" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Temporary password <span class="req">*</span></label>
+              <input name="userPassword" class="form-control" placeholder="Set a sign-in password" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status</label>
+              <select name="userStatus" class="form-control">
+                <option>Active</option>
+                <option>Inactive</option>
+              </select>
+            </div>
+          </div>
+          <div class="banner banner-info">
+            <span class="b-icon">ℹ️</span>
+            <div>Riders sign in on the <strong>Rider portal</strong>; clients on the <strong>Client portal</strong>; everyone else lands on the <strong>Admin portal</strong>.</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save user</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Role modal -->
+  <div class="modal-backdrop" id="roleModal">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <div><h3>Add role</h3><div class="sub">Define a new permission set</div></div>
+        <button class="modal-close" data-modal-close>✕</button>
+      </div>
+      <form id="roleForm" onsubmit="Admin.submitRole(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Role name <span class="req">*</span></label>
+            <input name="roleName" class="form-control" placeholder="e.g. Audit" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea name="roleDesc" class="form-control" rows="2" placeholder="What is this role responsible for?"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Create role</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reset password modal -->
+  <div class="modal-backdrop" id="resetPwModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div><h3>Reset password</h3><div class="sub">Set a new temporary password for this user</div></div>
+        <button class="modal-close" data-modal-close>✕</button>
+      </div>
+      <form id="resetPwForm" onsubmit="Admin.submitResetPw(event)">
+        <input type="hidden" name="pwUserId" />
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">New temporary password <span class="req">*</span></label>
+            <input name="newPassword" class="form-control" placeholder="Minimum 8 characters" required minlength="8" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-modal-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Reset password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../assets/js/app.js"></script>
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/admin.js"></script>
+</body>
+</html>

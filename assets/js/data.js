@@ -16,6 +16,7 @@ const DB = (() => {
     return d.toISOString();
   };
   const subDays = (n) => addDays(-n);
+  const subHours = (n) => new Date(today.getTime() - n * 3600000).toISOString();
 
   /* ---------------- clients ---------------- */
   const clients = [
@@ -242,6 +243,39 @@ const DB = (() => {
   /* ---------------- runtime tokens ---------------- */
   const tokens = new Map();
 
+  /* ---------------- access: permissions / roles / users ---------------- */
+  const permissions = [
+    { module: "Dashboard", actions: ["View"] },
+    { module: "Renewals", actions: ["View", "Manage"] },
+    { module: "Documents", actions: ["View", "Manage"] },
+    { module: "Delivery Batches", actions: ["View", "Create", "Pickup"] },
+    { module: "Riders", actions: ["View", "Manage"] },
+    { module: "Clients", actions: ["View", "Manage"] },
+    { module: "Invoices & Payments", actions: ["View", "Manage"] },
+    { module: "Users & Roles", actions: ["View", "Manage"] },
+    { module: "Reports", actions: ["View"] },
+  ];
+
+  const roles = [
+    { id: "super_admin", name: "Super Admin", desc: "Full access across the platform, including users & roles.", color: "#f59e0b", perms: ["Dashboard.View", "Renewals.View", "Renewals.Manage", "Documents.View", "Documents.Manage", "Batches.View", "Batches.Create", "Batches.Pickup", "Riders.View", "Riders.Manage", "Clients.View", "Clients.Manage", "Invoices.View", "Invoices.Manage", "Users.View", "Users.Manage", "Reports.View"] },
+    { id: "operations", name: "Operations", desc: "Renewals, documents and delivery batches.", color: "#0760e2", perms: ["Dashboard.View", "Renewals.View", "Renewals.Manage", "Documents.View", "Documents.Manage", "Batches.View", "Batches.Create", "Batches.Pickup", "Riders.View", "Clients.View", "Clients.Manage", "Invoices.View"] },
+    { id: "dispatch", name: "Dispatch (Rider)", desc: "Deliveries, waybills and delivery token flow.", color: "#0e9f6e", perms: ["Dashboard.View", "Batches.View", "Batches.Pickup", "Clients.View"] },
+    { id: "billing", name: "Billing", desc: "Invoices, payments and client records.", color: "#7c3aed", perms: ["Dashboard.View", "Clients.View", "Invoices.View", "Invoices.Manage", "Reports.View"] },
+    { id: "support", name: "Support", desc: "Client-facing assistance and document lookups.", color: "#0369a1", perms: ["Dashboard.View", "Renewals.View", "Documents.View", "Clients.View", "Clients.Manage"] },
+    { id: "client", name: "Client Portal", desc: "Self-service tracking, invoices and profile.", color: "#64748b", perms: ["Clients.View", "Invoices.View"] },
+  ];
+
+  const users = [
+    { id: "USR-001", name: "Adefemi Bakare", email: "adefemi.bakare@insurlogix.com", password: "admin123", roleId: "super_admin", phone: "+234 811 000 0101", status: "Active", lastActive: subHours(2) },
+    { id: "USR-002", name: "Bola Adeyemi", email: "bola.adeyemi@insurlogix.com", password: "ops123", roleId: "operations", phone: "+234 811 000 0102", status: "Active", lastActive: subHours(1) },
+    { id: "USR-003", name: "Tunde Bakare", email: "tunde.bakare@dispatch.com", password: "rider123", roleId: "dispatch", phone: "+234 812 000 1111", status: "Active", lastActive: subHours(3) },
+    { id: "USR-004", name: "Simi Adewale", email: "simi.adewale@insurlogix.com", password: "billing123", roleId: "billing", phone: "+234 811 000 0103", status: "Active", lastActive: subDays(1) },
+    { id: "USR-005", name: "Ikemefuna Nwosu", email: "ikemefuna.nwosu@insurlogix.com", password: "support123", roleId: "support", phone: "+234 811 000 0104", status: "Inactive", lastActive: subDays(14) },
+    { id: "USR-006", name: "Adaeze Okafor", email: "adaeze.okafor@gmail.com", password: "client123", roleId: "client", phone: "+234 801 234 5678", status: "Active", lastActive: subDays(2) },
+  ];
+
+  const ROLE_PORTAL = { super_admin: "admin", operations: "admin", billing: "admin", support: "admin", dispatch: "rider", client: "client" };
+
   /* ---------------- lookups ---------------- */
   const getClient = (id) => clients.find((c) => c.id === id);
   const getRider = (id) => riders.find((r) => r.id === id);
@@ -404,6 +438,44 @@ const DB = (() => {
   const nextInvoiceNumber = () =>
     "INV-2026-" + String(86 + invoices.length).padStart(3, "0");
 
+  /* ---------------- access helpers (mock) ---------------- */
+  const getRole = (id) => roles.find((r) => r.id === id);
+  const getUser = (id) => users.find((u) => u.id === id);
+  const findByCredentials = (email, password) =>
+    users.find(
+      (u) =>
+        u.email.toLowerCase() === String(email || "").toLowerCase().trim() &&
+        u.password === String(password || "")
+    );
+  const portalForRole = (roleId) => ROLE_PORTAL[roleId] || "admin";
+  const roleColor = (roleId) => getRole(roleId)?.color || "#64748b";
+  const usersOfRole = (roleId) => users.filter((u) => u.roleId === roleId);
+  const addUser = (data) => {
+    const id = "USR-" + String(users.length + 1).padStart(3, "0");
+    users.push({ ...data, id, lastActive: null });
+    return id;
+  };
+  const updateUser = (id, data) => Object.assign(getUser(id), data);
+  const setUserStatus = (id, status) => {
+    const u = getUser(id);
+    if (u) { u.status = status; u.lastActive = status === "Active" ? new Date().toISOString() : u.lastActive; }
+  };
+  const addRole = (data) => {
+    const id = data.name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+    roles.push({
+      id: id || "role_" + roles.length,
+      desc: "Custom role.",
+      color: "#0760e2",
+      perms: [],
+      ...data,
+    });
+    return id;
+  };
+  const setRolePerms = (id, perms) => {
+    const r = getRole(id);
+    if (r) r.perms = perms;
+  };
+
   const createInvoice = (clientId, items, dueInDays = 30) => {
     const inv = {
       id: "INV-" + (8100 + invoices.length + 1),
@@ -424,11 +496,25 @@ const DB = (() => {
     reminders,
     invoices,
     tokens,
+    permissions,
+    roles,
+    users,
     getClient,
     getRider,
     getDoc,
     getBatch,
     getInvoice,
+    getRole,
+    getUser,
+    findByCredentials,
+    portalForRole,
+    roleColor,
+    usersOfRole,
+    addUser,
+    updateUser,
+    setUserStatus,
+    addRole,
+    setRolePerms,
     docsOfClient,
     invoicesOfClient,
     docsOfBatch,

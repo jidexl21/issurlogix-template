@@ -622,6 +622,238 @@ const Admin = (() => {
     renderClients();
   };
 
+  /* ================= USERS & ROLES ================= */
+  const userInitials = (name) =>
+    String(name || "").split(" ").filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("") || "?";
+
+  const rolePill = (roleId) => {
+    const r = DB.getRole(roleId);
+    return r ? `<span class="role-pill" style="--rc:${r.color}">${App.esc(r.name)}</span>` : App.esc(roleId || "—");
+  };
+
+  const userRowHtml = (u) => {
+    const last = u.lastActive ? App.fmtDateTime(u.lastActive) : "Never";
+    return `<tr>
+      <td>
+        <div class="user-cell">
+          <div class="u-avatar sm" style="background:${DB.roleColor(u.roleId)}22;color:${DB.roleColor(u.roleId)}">${userInitials(u.name)}</div>
+          <div>
+            <div class="cell-main">${App.esc(u.name)}</div>
+            <div class="cell-sub">${u.id} · ${App.esc(u.email)}</div>
+          </div>
+        </div>
+      </td>
+      <td>${rolePill(u.roleId)}</td>
+      <td>${App.esc(u.phone || "—")}</td>
+      <td>${App.badge(u.status)}</td>
+      <td><div class="cell-main">${last}</div><div class="cell-sub">${u.status === "Active" ? "signed in" : "no sign-in"}</div></td>
+      <td>
+        <div class="actions">
+          <button class="btn btn-secondary btn-sm" data-edit-user="${u.id}">✏️ Edit</button>
+          <button class="btn btn-soft btn-sm" data-reset-pw="${u.id}">🔑</button>
+          <button class="btn btn-ghost btn-sm" data-toggle-user="${u.id}">${u.status === "Active" ? "Deactivate" : "Activate"}</button>
+        </div>
+      </td>
+    </tr>`;
+  };
+
+  const renderUsers = () => {
+    const q = (App.qs("#uSearch")?.value || "").toLowerCase();
+    const roleF = App.qs("#uRole")?.value || "all";
+    const statusF = App.qs("#uStatus")?.value || "all";
+
+    const rows = DB.users.filter((u) => {
+      if (roleF !== "all" && u.roleId !== roleF) return false;
+      if (statusF !== "all" && u.status !== statusF) return false;
+      if (q && !(u.name + u.email + u.phone + u.id).toLowerCase().includes(q)) return false;
+      return true;
+    });
+
+    App.renderInto("#userCount", `${rows.length} of ${DB.users.length} user${DB.users.length === 1 ? "" : "s"} · ${DB.users.filter((u) => u.status === "Active").length} active`);
+    App.renderInto("#usersTable", rows.length
+      ? `<div class="table-wrap"><table class="table"><thead><tr><th>User</th><th>Role</th><th>Phone</th><th>Status</th><th>Last active</th><th class="text-right">Actions</th></tr></thead>
+         <tbody>${rows.map(userRowHtml).join("")}</tbody></table></div>`
+      : App.emptyState("👤", "No users found", "Try adjusting the filters or add a user."));
+  };
+
+  const fillRoleSelects = () => {
+    const opts = DB.roles.map((r) => `<option value="${r.id}">${App.esc(r.name)}</option>`).join("");
+    const sel = App.qs("#userRoleSelect");
+    if (sel) sel.innerHTML = opts;
+    const filter = App.qs("#uRole");
+    if (filter) filter.innerHTML = '<option value="all">All roles</option>' + opts;
+  };
+
+  const bindUsers = () => {
+    ["uRole", "uStatus"].forEach((id) => {
+      const el = App.qs(`#${id}`);
+      if (el) el.addEventListener("change", renderUsers);
+    });
+    const search = App.qs("#uSearch");
+    if (search) search.addEventListener("input", renderUsers);
+
+    document.addEventListener("click", (e) => {
+      const edit = e.target.closest("[data-edit-user]");
+      if (edit) {
+        const u = DB.getUser(edit.dataset.editUser);
+        const form = App.qs("#userForm");
+        App.resetForm(form);
+        App.qs("#userModalTitle").textContent = "Edit user";
+        form.querySelector('[name="userId"]').value = u.id;
+        form.querySelector('[name="userName"]').value = u.name;
+        form.querySelector('[name="userEmail"]').value = u.email;
+        form.querySelector('[name="userPhone"]').value = u.phone || "";
+        form.querySelector('[name="userRole"]').value = u.roleId;
+        form.querySelector('[name="userStatus"]').value = u.status;
+        const pw = form.querySelector('[name="userPassword"]');
+        pw.value = "";
+        pw.required = false;
+        pw.placeholder = "Leave blank to keep current";
+        App.openModal("userModal");
+        return;
+      }
+      const reset = e.target.closest("[data-reset-pw]");
+      if (reset) {
+        const u = DB.getUser(reset.dataset.resetPw);
+        App.qs('[name="pwUserId"]').value = u.id;
+        App.qs("#resetPwForm").reset();
+        App.openModal("resetPwModal");
+        return;
+      }
+      const tog = e.target.closest("[data-toggle-user]");
+      if (tog) {
+        const u = DB.getUser(tog.dataset.toggleUser);
+        const next = u.status === "Active" ? "Inactive" : "Active";
+        DB.setUserStatus(u.id, next);
+        App.toast(next === "Active" ? "User activated" : "User deactivated", `${u.name} is now ${next.toLowerCase()}.`, next === "Active" ? "success" : "info");
+        renderUsers();
+      }
+    });
+
+    const addBtn = App.qs('[data-modal-open="userModal"]');
+    if (addBtn) {
+      addBtn.addEventListener("click", () => {
+        const form = App.qs("#userForm");
+        App.resetForm(form);
+        App.qs("#userModalTitle").textContent = "Add user";
+        form.querySelector('[name="userId"]').value = "";
+        const pw = form.querySelector('[name="userPassword"]');
+        pw.required = true;
+        pw.placeholder = "Set a sign-in password";
+        pw.value = "";
+      });
+    }
+  };
+
+  const submitUser = async (e) => {
+    e.preventDefault();
+    const form = App.qs("#userForm");
+    if (!App.requireFields(form)) return;
+    const v = App.formValues(form);
+    if (!v.userId) {
+      await App.fakeSave();
+      const id = DB.addUser({
+        name: v.userName, email: v.userEmail, phone: v.userPhone || "",
+        password: v.userPassword, roleId: v.userRole, status: v.userStatus,
+      });
+      App.closeModal("userModal");
+      App.toast("User added", `${v.userName} (${id}) can now sign in.`);
+    } else {
+      await App.fakeSave();
+      const patch = {
+        name: v.userName, email: v.userEmail, phone: v.userPhone || "",
+        roleId: v.userRole, status: v.userStatus,
+      };
+      if (v.userPassword) patch.password = v.userPassword;
+      DB.updateUser(v.userId, patch);
+      App.closeModal("userModal");
+      App.toast("User updated", `${v.userName}'s details and role were saved.`);
+    }
+    renderUsers();
+  };
+
+  const submitResetPw = async (e) => {
+    e.preventDefault();
+    const form = App.qs("#resetPwForm");
+    if (!App.requireFields(form)) return;
+    const v = App.formValues(form);
+    await App.fakeSave();
+    DB.updateUser(v.pwUserId, { password: v.newPassword });
+    App.closeModal("resetPwModal");
+    App.toast("Password reset", "A new temporary password is set for this user.");
+  };
+
+  /* ---------------- roles ---------------- */
+  const renderRoles = () => {
+    const permChip = (perm) => `<label class="perm-chip"><input type="checkbox" data-perm="${App.esc(perm)}" /><span>${App.esc(perm.replace(".", " · "))}</span></label>`;
+
+    App.renderInto("#rolesGrid", DB.roles.map((r) => {
+      const members = DB.usersOfRole(r.id);
+      const total = DB.permissions.reduce((n, m) => n + m.actions.length, 0);
+      return `<div class="role-card">
+        <div class="card-header spread">
+          <div>
+            <h2><span class="role-pill" style="--rc:${r.color}">${App.esc(r.name)}</span> <span class="small muted">${members.length} user${members.length === 1 ? "" : "s"}</span></h2>
+            <div class="sub">${App.esc(r.desc)}</div>
+          </div>
+          <span class="small muted">${r.perms.length}/${total} permissions</span>
+        </div>
+        <div class="card-body">
+          <div class="perm-grid">${DB.permissions.map((m) => `
+            <div class="perm-group">
+              <div class="perm-group-label">${App.esc(m.module)}</div>
+              ${m.actions.map((a) => permChip(`${m.module}.${a}`)).join("")}
+            </div>`).join("")}
+          </div>
+          <div class="spread mt-16">
+            <span class="small muted">Changes apply immediately to everyone with this role.</span>
+            <button class="btn btn-ghost btn-sm" data-copy-role="${r.id}">Duplicate role</button>
+          </div>
+        </div>
+      </div>`;
+    }).join(""));
+  };
+
+  const bindRoles = () => {
+    document.addEventListener("change", (e) => {
+      const chip = e.target.closest("[data-perm]");
+      if (!chip) return;
+      const roleEl = chip.closest(".role-card");
+      const name = roleEl.querySelector(".role-pill").textContent.trim();
+      const role = DB.roles.find((r) => r.name === name);
+      if (!role) return;
+      const checked = App.qsa("input[data-perm]:checked", roleEl).map((i) => i.dataset.perm);
+      DB.setRolePerms(role.id, checked);
+      roleEl.querySelector(".small.muted").textContent = `${checked.length}/${DB.permissions.reduce((n, m) => n + m.actions.length, 0)} permissions`;
+      App.toast("Permissions updated", `Saved for the ${role.name} role.`, "info");
+    });
+
+    document.addEventListener("click", (e) => {
+      const dup = e.target.closest("[data-copy-role]");
+      if (dup) {
+        const src = DB.getRole(dup.dataset.copyRole);
+        if (!src) return;
+        const newId = DB.addRole({ name: src.name + " Copy", desc: src.desc, color: src.color, perms: [...src.perms] });
+        App.toast("Role duplicated", `${src.name} Copy added with the same permissions.`, "success");
+        fillRoleSelects();
+        renderRoles();
+      }
+    });
+  };
+
+  const submitRole = async (e) => {
+    e.preventDefault();
+    const form = App.qs("#roleForm");
+    if (!App.requireFields(form)) return;
+    const v = App.formValues(form);
+    await App.fakeSave();
+    const id = DB.addRole({ name: v.roleName, desc: v.roleDesc || "", perms: [] });
+    App.closeModal("roleModal");
+    App.toast("Role created", `${v.roleName} added. Tick its permissions now.`);
+    fillRoleSelects();
+    renderRoles();
+  };
+
   /* ---------------- init by page ---------------- */
   const init = () => {
     document.addEventListener("click", (e) => {
@@ -645,6 +877,13 @@ const Admin = (() => {
       bindBatches();
     } else if (page === "riders") { renderRiders(); bindRiders(); }
     else if (page === "clients") { renderClients(); bindClients(); }
+    else if (page === "users") {
+      fillRoleSelects();
+      bindUsers();
+      renderUsers();
+      bindRoles();
+      renderRoles();
+    }
   };
 
   document.addEventListener("DOMContentLoaded", init);
@@ -657,5 +896,8 @@ const Admin = (() => {
     submitAddRider,
     submitAddClient,
     submitAddDoc,
+    submitUser,
+    submitResetPw,
+    submitRole,
   };
 })();
